@@ -5,7 +5,9 @@ setup.params = {
     lineLength: 5, //сколько подряд шаров нужно собрать
     cellHalfWidth: 38, //из css. + padding + border
     moveLineTime: 500, //длительность анимации перемещения
-    showBallsDelay: 300 //задержка перед показом шаров после анимации
+    showBallsDelay: 300, //задержка перед показом шаров после анимации,
+    defaultPointForBall: 10,
+    pointMultiplier: 2
 };
 
 //css класс из style.css с названиями классов цветов

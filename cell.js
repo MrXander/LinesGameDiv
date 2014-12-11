@@ -4,12 +4,12 @@ function Cell(x, y, elem, ball) {
     this.elem = elem;
     this.ball = ball;
     var self = this;
-    this.elem.addEventListener('click', function() {
+    this.elem.addEventListener('click', function () {
         self.clickHandler.call(self);
     });
 };
 
-Cell.prototype.hasBall = function(){
+Cell.prototype.hasBall = function () {
     if (this.ball)
         return true;
     return false;
@@ -17,13 +17,13 @@ Cell.prototype.hasBall = function(){
 //    return false;
 };
 
-Cell.createCellElement = function() {
+Cell.createCellElement = function () {
     var c = document.createElement('div');
     c.classList.add('cell');
     return c;
 };
 
-Cell.createMoveLineElement = function() {
+Cell.createMoveLineElement = function () {
     var l = document.createElement('div');
     l.classList.add('move-ball');
     return l;
@@ -52,21 +52,21 @@ Cell.prototype.clickHandler = function () {
     }
 };
 
-Cell.prototype.highlight = function() {
+Cell.prototype.highlight = function () {
     this.elem.classList.add('cell-highlight');
 };
 
-Cell.prototype.removeHighlight = function() {
+Cell.prototype.removeHighlight = function () {
     this.elem.classList.remove('cell-highlight');
 };
 
-Cell.prototype.insertBall = function(ball) {
+Cell.prototype.insertBall = function (ball) {
     this.elem.innerHTML = '';
     this.elem.appendChild(ball.elem);
     this.ball = ball;
 };
 
-Cell.prototype.clear = function() {
-   this.elem.innerHTML = '';
+Cell.prototype.clear = function () {
+    this.elem.innerHTML = '';
     this.ball = null;
 };

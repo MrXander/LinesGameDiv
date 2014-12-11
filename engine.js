@@ -75,6 +75,11 @@ engine.getBalls = function () {
         engine.balls[x][y] = b;
     }
 
+    if (engine.availableBalls.length === 0)
+    {
+        alert('game over');
+    }
+
     return balls;
 };
 
@@ -115,10 +120,19 @@ engine.drawNextBalls = function () {
 //перемещает шар в пустое место на поле.
 //в availableBalls хранятся заранее сгенерированные шары с позициями. Нужно поменять местами координаты нашего шара и клетки, куда шар перемещается
 engine.moveSelectedBall = function (cell) {
+    //console.log('moveSelectedBall');
+    //console.log('cell: x = ' + cell.x + '; y = ' + cell.y);
     for (var i = 0; i < engine.availableBalls.length; i++) {
         var b = engine.availableBalls[i];
+        //console.log('b: x = ' + b.x + '; y = ' + b.y);
         if (cell.x === b.x && cell.y === b.y) {
+            //console.log('bingo');
+
             cell.insertBall(engine.selectedBall);
+
+            var sb = engine.selectedBall;
+            var currentCell = grid.field[sb.x][sb.y];
+            currentCell.clear();
 
             engine.changeBalls(b);
 
@@ -250,7 +264,9 @@ engine.increaseCounter = function (x, y, detector, direction, cell) {
 
 //удаляет шары с поля, генерируем новые шары под пустые места и добавляем в availableBalls
 engine.destroyBalls = function (paths) {
+    var points = engine.getPoints();
     for (var i = 0; i < paths.length; i++) {
+        points = points + engine.countPoints(paths[i]);
         for (var j = 0; j < paths[i].length; j++) {
             var x = paths[i][j].x;
             var y = paths[i][j].y;
@@ -260,8 +276,6 @@ engine.destroyBalls = function (paths) {
 
             cell.clear();
 
-            //TO DO: count points
-
             engine.balls[x][y] = null;
 
             //adding new ball to this position
@@ -270,6 +284,32 @@ engine.destroyBalls = function (paths) {
         }
     }
     engine.availableBalls.sort(function(a, b) { return a.order - b.order; });
+    engine.showPoints(points);
+};
+
+engine.getPoints = function() {
+    var e = document.getElementById('points');
+    if (e.innerHTML)
+        return parseInt(e.innerHTML);
+    return 0;
+}
+
+engine.countPoints = function(path) {
+    var lineLength = setup.params.defaultPointForBall;
+    var points = 0;
+    for (var i = 0; i < path.length; i++) {
+        if (i < setup.params.lineLength) {
+            points = points + lineLength;
+        } else {
+            points = points + ((i + 1 - lineLength) * setup.params.pointMultiplier);
+        }
+    }
+    return points;
+};
+
+engine.showPoints = function(p) {
+    var e = document.getElementById('points');
+    e.innerHTML = p;
 };
 
 engine.animateMoving = function (path) {
