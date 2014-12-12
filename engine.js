@@ -3,6 +3,7 @@ var engine = engine || {};
 engine.balls = []; //текущие шары на поле
 engine.selectedBall = null; //выбранный шар
 engine.availableBalls = new Array(); //заранее сгенерированные и рандомно отсортированные шары
+engine.points = 0;
 
 engine.getRandom = function (max) {
     return Math.floor(Math.random() * (max - 0 + 1)) + 0;
@@ -264,9 +265,8 @@ engine.increaseCounter = function (x, y, detector, direction, cell) {
 
 //удаляет шары с поля, генерируем новые шары под пустые места и добавляем в availableBalls
 engine.destroyBalls = function (paths) {
-    var points = engine.getPoints();
     for (var i = 0; i < paths.length; i++) {
-        points = points + engine.countPoints(paths[i]);
+        engine.points = engine.points + engine.countPoints(paths[i]);
         for (var j = 0; j < paths[i].length; j++) {
             var x = paths[i][j].x;
             var y = paths[i][j].y;
@@ -284,32 +284,26 @@ engine.destroyBalls = function (paths) {
         }
     }
     engine.availableBalls.sort(function(a, b) { return a.order - b.order; });
-    engine.showPoints(points);
+    engine.showPoints();
 };
 
-engine.getPoints = function() {
-    var e = document.getElementById('points');
-    if (e.innerHTML)
-        return parseInt(e.innerHTML);
-    return 0;
-}
-
 engine.countPoints = function(path) {
-    var lineLength = setup.params.defaultPointForBall;
+    var lineLength = setup.params.lineLength;
+    var defaultPoints = setup.params.defaultPointForBall;
     var points = 0;
     for (var i = 0; i < path.length; i++) {
         if (i < setup.params.lineLength) {
-            points = points + lineLength;
+            points = points + defaultPoints;
         } else {
-            points = points + ((i + 1 - lineLength) * setup.params.pointMultiplier);
+            points = points + ((i + 1 - lineLength) * defaultPoints * setup.params.pointMultiplier);
         }
     }
     return points;
 };
 
-engine.showPoints = function(p) {
+engine.showPoints = function() {
     var e = document.getElementById('points');
-    e.innerHTML = p;
+    e.innerHTML = engine.points;
 };
 
 engine.animateMoving = function (path) {

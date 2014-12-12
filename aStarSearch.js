@@ -7,19 +7,34 @@ function Node(cell) {
     this.g = 0;
     this.f = 0;
 
-    //для дебага
+    //для де
     this.e = cell.elem;
+
+    aStarSearch.nodes[this.x][this.y] = this;
 }
 
 Node.map = function(cells) {
   var result = new Array();
     for(var i = 0; i < cells.length; i++) {
-        result.push(new Node(cells[i]));
+        var c = cells[i];
+        var n;
+        if (!aStarSearch.nodes[c.x][c.y]) {
+            n = new Node(cells[i]);
+        }
+        result.push(aStarSearch.nodes[c.x][c.y]);
     }
     return result;
 };
 
-function aStarSearch() {};
+function aStarSearch() {
+    aStarSearch.nodes = new Array();
+      for(var x = 0; x < grid.options.fieldHeight; x++) {
+          aStarSearch.nodes[x] = new Array();
+          for(var y = 0; y < grid.options.fieldWidth; y++) {
+              aStarSearch.nodes[x][y] = null;
+          }
+      }
+};
 
 aStarSearch.prototype.findPath = function(startCell, endCell) {
     var openList = new Array();
@@ -74,9 +89,10 @@ aStarSearch.prototype.findPath = function(startCell, endCell) {
                     n.isOpen = true;
                     openList.push(n);
                 }
+
+                openList = openList.sort(function(a, b) { return b.f - a.f; }); //по убыванию для pop()
             }
         }
-        openList = openList.sort(function(a, b) { return b.f - a.f; }); //по убыванию для pop()
     }
 
     //не удалось найти путь
